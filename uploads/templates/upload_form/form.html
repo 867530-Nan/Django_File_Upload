@@ -1,0 +1,26 @@
+<h1>Welcome to Upload World</h1>
+
+{% if upload_list %}
+  <h3>Uploads thus far..</h3>
+    <ul>
+    {% for single in upload_list %}
+        <li>{{ single.title }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No uploads yet..</p>
+{% endif %}
+<hr>
+
+<form action="/upload_file/" method="post" enctype="multipart/form-data">
+{%csrf_token%}
+  <p>
+    <label>Upload Title:</label><br>
+    <input id="title" type="text" name="title" placeholder="Enter Title Here..">
+  </p>
+  <p>
+    <input id="upload" type="file" name="upload">
+  </p>
+  <input type="submit" value="Submit" />
+</form>
+
