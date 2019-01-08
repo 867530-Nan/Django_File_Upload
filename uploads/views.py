@@ -6,10 +6,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
-<<<<<<< HEAD
 from .models import Upload, Word
-=======
->>>>>>> fetching
 
 from .models import Upload, URLUpload
 
@@ -113,9 +110,6 @@ def finishedAndRemoveFiles():
     path = "media"
     file_list = os.listdir(path)
     for i in file_list:
-<<<<<<< HEAD
-        os.remove(f'media/{i}')
-=======
         os.remove(f'media/{i}')
 
 
@@ -127,4 +121,3 @@ def striphtml(data):
 def urlCheck(path):
     with urllib.request.urlopen(path) as response:
         stripped = striphtml(response.read().decode("utf-8"))
->>>>>>> fetching
