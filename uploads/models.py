@@ -11,6 +11,14 @@ class Upload(models.Model):
         return self.title
 
 
+class URLUpload(models.Model):
+    title = models.TextField()
+    url_upload = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+
 class Word(models.Model):
     token = models.TextField(unique=True)
     count = models.IntegerField()
