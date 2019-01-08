@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
-
 from .models import Upload
 
 from .forms import UploadFileForm
-# Create your views here.
+
+import os
+import io
+import re
+import magic
+from PyPDF2 import PdfFileReader
 
 
 class UploadView(generic.ListView):
@@ -33,9 +37,46 @@ def upload_file(request):
             instance = Upload(
                 upload=request.FILES['upload'], title=request.POST['title'])
             instance.save()
+            checkTypeSendAway()
             return HttpResponseRedirect('/success/')
         else:
             return HttpResponseRedirect('/failure/')
     else:
-        form = UploadFileForm()
+        return HttpResponseRedirect('/failure/')
     return render(request, 'upload_form/form.html', {'form': form})
+
+
+def checkTypeSendAway():
+    print("checking type")
+    path = "media"
+    file_list = os.listdir(path)
+    for i in file_list:
+        file_type = magic.from_file(f'media/{i}').split(", ")
+        if file_type[0] == "ASCII text":
+            print("ASCII Document Identified")
+            convertASCII(i)
+        elif file_type[0] == "PDF document":
+            print("PDF Document Identified")
+            convertPDF(i)
+    finishedAndRemoveFiles()
+
+
+def convertPDF(file):
+    with open(f'media/{file}', 'rb') as f:
+        pdf = PdfFileReader(f)
+        page = pdf.getPage(0)
+        # For PDF raw text, you'll feed your function page.extractText()
+        print(page.extractText())
+
+
+def convertASCII(file):
+    testing = open(f'media/{file}', 'rb')
+    # For ASCII Text, you'll feed your function testing.read().decode("utf-8")
+    print(testing.read().decode("utf-8"))
+
+
+def finishedAndRemoveFiles():
+    path = "media"
+    file_list = os.listdir(path)
+    for i in file_list:
+        os.remove(f'media/{i}')
