@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
-from .models import Upload
+from .models import Upload, Word
 
 from .forms import UploadFileForm
 
@@ -65,14 +65,13 @@ def convertPDF(file):
     with open(f'media/{file}', 'rb') as f:
         pdf = PdfFileReader(f)
         page = pdf.getPage(0)
-        # For PDF raw text, you'll feed your function page.extractText()
         print(page.extractText())
 
 
 def convertASCII(file):
-    testing = open(f'media/{file}', 'rb')
-    # For ASCII Text, you'll feed your function testing.read().decode("utf-8")
-    print(testing.read().decode("utf-8"))
+    document = open(f'media/{file}', 'rb')
+    text = document.read().decode("utf-8")
+    Word.count_vectorizer(text)
 
 
 def finishedAndRemoveFiles():

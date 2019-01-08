@@ -1,7 +1,6 @@
-from django.db import models
+from django.db import models, connection
 
-# Create your models here.
-
+from sklearn.feature_extraction.text import CountVectorizer
 
 class Upload(models.Model):
     title = models.CharField(max_length=100)
@@ -9,3 +8,29 @@ class Upload(models.Model):
 
     def __str__(self):
         return self.title
+
+class Word(models.Model):
+    token = models.TextField(unique=True)
+    count = models.IntegerField()
+    frequency = models.FloatField(null=True)
+
+    def count_vectorizer(text):
+        vectorizer = CountVectorizer(token_pattern=r"\b[\w']+\b", analyzer="word")
+        tokens = vectorizer.fit([text]).get_feature_names() 
+        freq = vectorizer.transform([text]).toarray()[0].tolist() 
+        data = [list(t) for t in zip(tokens, freq)]
+        with connection.cursor() as cursor: 
+            cursor.executemany(  
+                "INSERT INTO uploads_word(token,count)\
+                VALUES (%s,%s) ON CONFLICT (token)\
+                DO UPDATE SET count = excluded.count + uploads_word.count;", data)
+            cursor.execute(
+                "WITH new_values AS (SELECT id, count / (SELECT SUM(count)::FLOAT FROM uploads_word) AS freq FROM uploads_word)\
+                update uploads_word as old_values\
+                set frequency = new_values.freq\
+                from new_values new_values\
+                where new_values.id = old_values.id;"          
+            )      
+
+    def _str_(self):
+        return self.token
