@@ -62,10 +62,15 @@ def checkTypeSendAway():
 
 
 def convertPDF(file):
-    with open(f'media/{file}', 'rb') as f:
-        pdf = PdfFileReader(f)
-        page = pdf.getPage(0)
-        print(page.extractText())
+    with open(f'media/{file}', 'rb') as text_file:
+        pdf = PdfFileReader(text_file)
+        if pdf.isEncrypted:
+            pdf.decrypt('')
+        number_of_pages = pdf.getNumPages()
+        for page_number in range(number_of_pages):
+            page = pdf.getPage(page_number)
+            text = page.extractText()
+            Word.count_vectorizer(text)
 
 
 def convertASCII(file):
