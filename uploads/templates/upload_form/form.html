@@ -15,11 +15,27 @@
 <form action="/upload_file/" method="post" enctype="multipart/form-data">
 {%csrf_token%}
   <p>
-    <label>Upload Title:</label><br>
+    <label>File Upload:</label><br>
     <input id="title" type="text" name="title" placeholder="Enter Title Here..">
   </p>
   <p>
     <input id="upload" type="file" name="upload">
+  </p>
+  <input type="submit" value="Submit" />
+</form>
+
+<br>
+<hr>
+<br>
+
+<form action="/upload_url/" method="post" enctype="multipart/form-data">
+{%csrf_token%}
+  <p>
+    <label>URL Submission:</label><br>
+    <input id="title" type="text" name="title" placeholder="Enter Title Here..">
+  </p>
+  <p>
+    <input id="url_upload" type="text" name="url_upload" placeholder="Enter URL Here..">
   </p>
   <input type="submit" value="Submit" />
 </form>

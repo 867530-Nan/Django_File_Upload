@@ -1,19 +1,33 @@
+# binding.pry replica code
+# package already imported
+# code.interact(local=dict(globals(), **locals()))
+
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
+<<<<<<< HEAD
 from .models import Upload, Word
+=======
+>>>>>>> fetching
 
-from .forms import UploadFileForm
+from .models import Upload, URLUpload
+
+from .forms import UploadFileForm, URLUploadFileForm
 
 import os
-import io
-import re
 import magic
+import re
+import code
+import urllib.request
+
+from bs4 import BeautifulSoup
 from PyPDF2 import PdfFileReader
 
 
 class UploadView(generic.ListView):
     template_name = 'upload_form/form.html'
+    fields = ('Upload File(s)', 'Enter a URL', 'Sing a Song')
     context_object_name = 'upload_list'
 
     def get_queryset(self):
@@ -28,6 +42,22 @@ class SuccessView(generic.TemplateView):
 class FailureView(generic.TemplateView):
     model = Upload
     template_name = 'upload_form/failure.html'
+
+
+def upload_url(request):
+    if request.method == 'POST':
+        # code.interact(local=dict(globals(), **locals()))
+        form = URLUploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = URLUpload(
+                url_upload=request.POST['url_upload'], title=request.POST['title'])
+            instance.save()
+            urlCheck(request.POST['url_upload'])
+            return HttpResponseRedirect('/success/')
+        else:
+            return HttpResponseRedirect('/failure/')
+    else:
+        return HttpResponseRedirect('/failure/')
 
 
 def upload_file(request):
@@ -83,4 +113,18 @@ def finishedAndRemoveFiles():
     path = "media"
     file_list = os.listdir(path)
     for i in file_list:
+<<<<<<< HEAD
         os.remove(f'media/{i}')
+=======
+        os.remove(f'media/{i}')
+
+
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
+
+
+def urlCheck(path):
+    with urllib.request.urlopen(path) as response:
+        stripped = striphtml(response.read().decode("utf-8"))
+>>>>>>> fetching

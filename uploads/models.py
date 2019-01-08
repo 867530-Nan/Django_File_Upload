@@ -9,6 +9,7 @@ class Upload(models.Model):
     def __str__(self):
         return self.title
 
+<<<<<<< HEAD
 class Word(models.Model):
     token = models.TextField(unique=True)
     count = models.IntegerField()
@@ -34,3 +35,12 @@ class Word(models.Model):
 
     def _str_(self):
         return self.token
+=======
+
+class URLUpload(models.Model):
+    title = models.TextField()
+    url_upload = models.TextField()
+
+    def __str__(self):
+        return self.title
+>>>>>>> fetching
