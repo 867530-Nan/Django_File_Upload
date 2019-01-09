@@ -43,12 +43,11 @@ class FailureView(generic.TemplateView):
 
 def upload_url(request):
     if request.method == 'POST':
-        # code.interact(local=dict(globals(), **locals()))
         form = URLUploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             instance = URLUpload(
                 url_upload=request.POST['url_upload'], title=request.POST['title'])
-            instance.save()
+            # instance.save()
             urlCheck(request.POST['url_upload'])
             return HttpResponseRedirect('/success/')
         else:
@@ -120,4 +119,14 @@ def striphtml(data):
 
 def urlCheck(path):
     with urllib.request.urlopen(path) as response:
-        stripped = striphtml(response.read().decode("utf-8"))
+        stripped = response.read().decode("utf-8")
+        tree = BeautifulSoup(stripped, "html.parser")
+        body = tree.body
+        for tag in body.select('script'):
+            tag.decompose()
+        for tag in body.select('style'):
+            tag.decompose()
+        text = body.get_text().strip()
+        # I think text is what we want.... it parses with..
+        # a lot of white-space for now
+        print(text)
