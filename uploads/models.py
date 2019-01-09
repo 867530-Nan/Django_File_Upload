@@ -45,8 +45,6 @@ class Word(models.Model):
 
     def _str_(self):
         return self.token
-<<<<<<< 663b9c63628569a5964e2c416e36a64c8096fd0c
-=======
 
 class NGram(models.Model):
     token = models.TextField()
@@ -80,4 +78,3 @@ class NGram(models.Model):
 
     def _str_(self):
         return self.token
->>>>>>> ngram processing

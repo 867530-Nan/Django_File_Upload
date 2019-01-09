@@ -47,7 +47,7 @@ def upload_url(request):
         if form.is_valid():
             instance = URLUpload(
                 url_upload=request.POST['url_upload'], title=request.POST['title'])
-            # instance.save()
+            instance.save()
             urlCheck(request.POST['url_upload'])
             return HttpResponseRedirect('/success/')
         else:
@@ -97,6 +97,7 @@ def convertPDF(file):
             page = pdf.getPage(page_number)
             text = page.extractText()
             Word.count_vectorizer(text)
+            NGram.count_vectorizer(text)
 
 
 def convertASCII(file):
@@ -128,6 +129,5 @@ def urlCheck(path):
         for tag in body.select('style'):
             tag.decompose()
         text = body.get_text().strip()
-        # I think text is what we want.... it parses with..
-        # a lot of white-space for now
-        print(text)
+        Word.count_vectorizer(text)
+        NGram.count_vectorizer(text)
