@@ -6,7 +6,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
-from .models import Upload, Word
+from .models import Upload, Word, NGram
 
 from .models import Upload, URLUpload
 
@@ -103,6 +103,7 @@ def convertASCII(file):
     document = open(f'media/{file}', 'rb')
     text = document.read().decode("utf-8")
     Word.count_vectorizer(text)
+    NGram.count_vectorizer(text)
 
 
 def finishedAndRemoveFiles():
